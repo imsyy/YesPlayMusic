@@ -18,7 +18,7 @@ module.exports = {
     },
   },
   pwa: {
-    name: "YesPlayMusic",
+    name: "無名の音乐站",
     iconPaths: {
       favicon32: "img/icons/favicon-32x32.png",
     },
@@ -35,7 +35,7 @@ module.exports = {
       entry: "src/main.js",
       template: "public/index.html",
       filename: "index.html",
-      title: "YesPlayMusic",
+      title: "無名の音乐站",
       chunks: ["main", "chunk-vendors", "chunk-common", "index"],
     },
   },
@@ -61,7 +61,7 @@ module.exports = {
       nodeIntegration: true,
       externals: ["@nondanee/unblockneteasemusic", "@njzy/unblockneteasemusic"],
       builderOptions: {
-        productName: "YesPlayMusic",
+        productName: "無名の音乐站",
         copyright: "Copyright © YesPlayMusic",
         // compression: "maximum", // 机器好的可以打开，配置压缩，开启后会让 .AppImage 格式的客户端启动缓慢
         asar: true,
