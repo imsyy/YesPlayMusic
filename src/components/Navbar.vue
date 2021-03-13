@@ -1,7 +1,7 @@
 <template>
   <nav>
     <div class="win32-titlebar">
-      <div class="title">YesPlayMusic</div>
+      <div class="title">無名の音乐站</div>
       <div class="controls">
         <div
           class="button minimize codicon codicon-chrome-minimize"
