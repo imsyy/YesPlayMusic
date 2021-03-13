@@ -7,6 +7,8 @@ let localStorage = {
     lang: null,
     appearance: "auto",
     musicQuality: 320000,
+    lyricFontSize: 28,
+    outputDevice: "default",
     showGithubIcon: true,
     showPlaylistsByAppleMusic: true,
     showUnavailableSongInGreyStyle: true,

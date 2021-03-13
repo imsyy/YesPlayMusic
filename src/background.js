@@ -88,20 +88,18 @@ class Background {
   createWindow() {
     console.log("creating app window");
 
-    // Only for Windows, a special title bar for it
-    const withoutFrame = process.platform == "win32";
-
     this.window = new BrowserWindow({
       width: this.store.get("window.width") | 1440,
       height: this.store.get("window.height") | 840,
-      minWidth: 360,
-      minHeight: 240,
+      minWidth: 1080,
+      minHeight: 720,
       titleBarStyle: "hiddenInset",
-      frame: !withoutFrame,
+      frame: process.platform !== "win32",
       webPreferences: {
         webSecurity: false,
         nodeIntegration: true,
         enableRemoteModule: true,
+        contextIsolation: false,
       },
     });
 
@@ -140,11 +138,9 @@ class Background {
         });
     };
 
-    if (process.platform === "darwin") {
-      autoUpdater.on("update-available", (info) => {
-        showNewVersionMessage(info);
-      });
-    }
+    autoUpdater.on("update-available", (info) => {
+      showNewVersionMessage(info);
+    });
   }
 
   handleWindowEvents() {
@@ -176,7 +172,6 @@ class Background {
         ["win32", "linux"].includes(process.platform) &&
         this.store.get("settings.minimizeToTray")
       ) {
-        this.tray = createTray(this.window);
         this.window.hide();
       }
     });
@@ -208,6 +203,11 @@ class Background {
 
       // create menu
       createMenu(this.window);
+
+      // create tray
+      if (["win32", "linux"].includes(process.platform)) {
+        this.tray = createTray(this.window);
+      }
 
       // create dock menu for macOS
       app.dock.setMenu(createDockMenu(this.window));

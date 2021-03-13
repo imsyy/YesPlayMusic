@@ -39,7 +39,6 @@
           :id="likedSongsPlaylist.id"
           dbclickTrackFunc="playPlaylistByID"
           :columnNumber="3"
-          :withoutPadding="true"
         />
       </div>
     </div>
@@ -81,7 +80,7 @@
           icon="plus"
           v-show="currentTab === 'playlists'"
           @click="openAddPlaylistModal"
-          ><svg-icon icon-class="plus" />新建歌单</button
+          ><svg-icon icon-class="plus" />{{ $t("library.newPlayList") }}</button
         >
       </div>
 
@@ -115,12 +114,14 @@
     </div>
 
     <ContextMenu ref="userProfileMenu">
-      <div class="item" @click="settings"
-        ><svg-icon icon-class="settings" />设置</div
-      >
-      <div class="item" @click="logout"
-        ><svg-icon icon-class="logout" />退出登录</div
-      >
+      <div class="item" @click="settings">
+        <svg-icon icon-class="settings" />
+        {{ $t("library.userProfileMenu.settings") }}
+      </div>
+      <div class="item" @click="logout">
+        <svg-icon icon-class="logout" />
+        {{ $t("library.userProfileMenu.logout") }}
+      </div>
     </ContextMenu>
   </div>
 </template>
@@ -130,6 +131,7 @@ import { mapActions, mapMutations, mapState } from "vuex";
 import { getTrackDetail, getLyric } from "@/api/track";
 import {
   userDetail,
+  userAccount,
   userPlaylist,
   likedAlbums,
   likedArtists,
@@ -170,9 +172,21 @@ export default {
   },
   created() {
     NProgress.start();
-    userDetail(this.data.user.userId).then((data) => {
-      this.$store.commit("updateData", { key: "user", value: data.profile });
-    });
+    if (isAccountLoggedIn()) {
+      userAccount().then((result) => {
+        this.$store.commit("updateData", {
+          key: "user",
+          value: result.profile,
+        });
+      });
+    } else {
+      userDetail(this.data.user.userId).then((result) => {
+        this.$store.commit("updateData", {
+          key: "user",
+          value: result.profile,
+        });
+      });
+    }
   },
   activated() {
     if (!this.data.likedSongPlaylistID) {
@@ -356,7 +370,6 @@ h1 {
   color: var(--color-text);
   display: flex;
   align-items: center;
-  padding: var(--main-content-padding);
   .avatar {
     height: 44px;
     margin-right: 12px;
@@ -375,22 +388,11 @@ h1 {
 .section-one {
   display: flex;
   margin-top: 24px;
-  padding: var(--main-content-padding);
   .songs {
     flex: 7;
     margin-top: 8px;
     margin-left: 36px;
     overflow: hidden;
-  }
-}
-
-@media (max-width: 800px) {
-  .section-one {
-    display: block;
-    .songs {
-      margin-top: 20px;
-      margin-left: 0;
-    }
   }
 }
 
@@ -473,7 +475,6 @@ h1 {
   display: flex;
   justify-content: space-between;
   margin-bottom: 24px;
-  padding: var(--main-content-padding);
 }
 
 .tabs {

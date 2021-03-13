@@ -76,6 +76,44 @@
       </div>
       <div class="item">
         <div class="left">
+          <div class="title"> {{ $t("settings.lyricFontSize.text") }} </div>
+        </div>
+        <div class="right">
+          <select v-model="lyricFontSize">
+            <option value="14">
+              {{ $t("settings.lyricFontSize.small") }} - 14px
+            </option>
+            <option value="22">
+              {{ $t("settings.lyricFontSize.medium") }} - 22px
+            </option>
+            <option value="28">
+              {{ $t("settings.lyricFontSize.large") }} - 28px
+            </option>
+            <option value="36">
+              {{ $t("settings.lyricFontSize.xlarge") }} - 36px
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="item">
+        <div class="left">
+          <div class="title"> {{ $t("settings.deviceSelector") }} </div>
+        </div>
+        <div class="right">
+          <select v-model="outputDevice" :disabled="withoutAudioPriviledge">
+            <option
+              v-for="device in allOutputDevices"
+              :key="device.deviceId"
+              :value="device.deviceId"
+              :selected="device.deviceId == outputDevice"
+            >
+              {{ $t(device.label) }}
+            </option>
+          </select>
+        </div>
+      </div>
+      <div class="item">
+        <div class="left">
           <div class="title">
             {{ $t("settings.automaticallyCacheSongs") }}
           </div>
@@ -111,7 +149,7 @@
       </div>
       <div class="item">
         <div class="left">
-          <div class="title">显示歌词翻译</div>
+          <div class="title">{{ $t("settings.showLyricsTranslation") }}</div>
         </div>
         <div class="right">
           <div class="toggle">
@@ -127,7 +165,7 @@
       </div>
       <div class="item" v-if="isElectron && !isMac">
         <div class="left">
-          <div class="title">最小化到托盘</div>
+          <div class="title">{{ $t("settings.minimizeToTray") }}</div>
         </div>
         <div class="right">
           <div class="toggle">
@@ -227,10 +265,17 @@ export default {
         size: "0KB",
         length: 0,
       },
+      allOutputDevices: [
+        {
+          deviceId: "default",
+          label: "settings.permissionRequired",
+        },
+      ],
+      withoutAudioPriviledge: true,
     };
   },
   computed: {
-    ...mapState(["settings", "data"]),
+    ...mapState(["player", "settings", "data"]),
     isElectron() {
       return process.env.IS_ELECTRON;
     },
@@ -268,6 +313,35 @@ export default {
         if (value === this.settings.musicQuality) return;
         this.$store.commit("changeMusicQuality", value);
         this.clearCache("tracks");
+      },
+    },
+    lyricFontSize: {
+      get() {
+        if (this.settings.lyricFontSize === undefined) return 28;
+        return this.settings.lyricFontSize;
+      },
+      set(value) {
+        this.$store.commit("changeLyricFontSize", value);
+      },
+    },
+    outputDevice: {
+      get() {
+        if (this.withoutAudioPriviledge === true) this.getAllOutputDevices();
+        const isValidDevice = this.allOutputDevices.find(
+          (device) => device.deviceId === this.settings.outputDevice
+        );
+        if (
+          this.settings.outputDevice === undefined ||
+          isValidDevice === undefined
+        )
+          return "default"; // Default deviceId
+        return this.settings.outputDevice;
+      },
+      set(deviceId) {
+        if (deviceId === this.settings.outputDevice || deviceId === undefined)
+          return;
+        this.$store.commit("changeOutputDevice", deviceId);
+        this.player.setOutputDevice();
       },
     },
     showGithubIcon: {
@@ -356,6 +430,26 @@ export default {
     },
   },
   methods: {
+    getAllOutputDevices() {
+      navigator.mediaDevices.enumerateDevices().then((devices) => {
+        this.allOutputDevices = devices.filter((device) => {
+          return device.kind == "audiooutput";
+        });
+        if (
+          this.allOutputDevices.length > 0 &&
+          this.allOutputDevices[0].label !== ""
+        ) {
+          this.withoutAudioPriviledge = false;
+        } else {
+          this.allOutputDevices = [
+            {
+              deviceId: "default",
+              label: "settings.permissionRequired",
+            },
+          ];
+        }
+      });
+    },
     logout() {
       doLogout();
       this.$router.push({ name: "home" });
@@ -393,7 +487,6 @@ export default {
 .settings {
   display: flex;
   justify-content: center;
-  padding: var(--main-content-padding);
 }
 .container {
   margin-top: 24px;

@@ -27,6 +27,11 @@ export default {
     albums: "Albums",
     artists: "Artists",
     mvs: "MVs",
+    newPlayList: "New Playlist",
+    userProfileMenu: {
+      settings: "Settings",
+      logout: "Logout",
+    },
   },
   explore: {
     explore: "Explore",
@@ -118,6 +123,15 @@ export default {
       high: "High",
       lossless: "Lossless",
     },
+    lyricFontSize: {
+      text: "Lyric Font Size",
+      small: "Small",
+      medium: "Medium",
+      large: "Large(Default)",
+      xlarge: "X-Large",
+    },
+    deviceSelector: "Audio Output Device",
+    permissionRequired: "Microphone Permission Required",
     appearance: {
       text: "Appearance",
       auto: "Auto",
@@ -127,6 +141,8 @@ export default {
     automaticallyCacheSongs: "Automatically cache songs",
     clearSongsCache: "Clear Songs Cache",
     cacheCount: "Cached {song} songs ({size})",
+    showLyricsTranslation: "Show lyrics translation",
+    minimizeToTray: "Minimize to tray",
     showGitHubIcon: "Show GitHub icon",
     showUnavailableSongInGreyStyle: "Show unavailable song in grey style",
     showPlaylistsByAppleMusic: "Show playlists by Apple Music",
