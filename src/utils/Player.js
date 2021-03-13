@@ -180,7 +180,7 @@ export default class {
     });
     if (autoplay) {
       this.play();
-      document.title = `${this._currentTrack.name} · ${this._currentTrack.ar[0].name} - YesPlayMusic`;
+      document.title = `${this._currentTrack.name} · ${this._currentTrack.ar[0].name} - 無名の音乐站`;
     }
     this.setOutputDevice();
     this._howler.once("end", () => {
@@ -360,13 +360,13 @@ export default class {
   pause() {
     this._howler.pause();
     this._playing = false;
-    document.title = "YesPlayMusic";
+    document.title = "無名の音乐站";
   }
   play() {
     if (this._howler.playing()) return;
     this._howler.play();
     this._playing = true;
-    document.title = `${this._currentTrack.name} · ${this._currentTrack.ar[0].name} - YesPlayMusic`;
+    document.title = `${this._currentTrack.name} · ${this._currentTrack.ar[0].name} - 無名の音乐站`;
   }
   playOrPause() {
     if (this._howler.playing()) {
